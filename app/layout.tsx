@@ -1,9 +1,11 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/shared/Header";
 import { Footer } from "@/components/shared/Footer";
-import { AuthProvider } from "./context/AuthContext";
+import AuthChecker from "@/components/AuthChecker";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +16,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
 
 export const metadata: Metadata = {
   title: "Книжные выставки",
@@ -28,13 +31,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen flex flex-col`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen flex flex-col`}>
+        <AuthChecker />
         <Header/>
         <main className="flex-grow">
-        <AuthProvider>
-        {children}
-        </AuthProvider>
+     
+          {children}
+        
         </main>
         <Footer/>
       </body>

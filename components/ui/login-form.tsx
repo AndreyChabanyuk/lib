@@ -11,11 +11,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import axios from "axios"
+
 import qs from "qs"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useAuth } from "@/app/context/AuthContext"
+import {  useState } from "react"
+import useMyAxios from "@/app/composables/useMyAxios"
+
 
 export function LoginForm({
   className,
@@ -23,60 +24,43 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
 
   // Функционал входа
-
+  const { request } = useMyAxios()
   const [username, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const router = useRouter()
   
   const handleSubmit = async (e) => {
      e.preventDefault()
-     
-     try {
-           const response = await axios.post("http://82.202.137.19/users/login", qs.stringify({
-           username,
-           password,
-         }),{
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-         })
-         console.log(response)
-         if (response.data.is_authenticated) {
-           localStorage.setItem("role",response.data.role)
-            router.push("/")
-         } else {
-          setError("Ошибка" + response.data.message)
-         }
- 
-         // Сохраните токен в localStorage или в контексте
-     /*     localStorage.setItem("token", response.data.token) */
-         // Перенаправление на главную страницу
-        
-       } catch (error) {
-         const errorMessage = error?.response ? error?.response?.data.message : "Ошибка регистрации";
-         setError(errorMessage)
-       }
+      try{
+          const response = await request("users/login",'POST', 
+      
+            qs.stringify({
+              username,
+              password,
+            }),
+              {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }
+          )
+      console.log(response)
+        if (response.data == '') {
+        alert('Вы успешно авторизовались!')
+        localStorage.setItem("isAuthenticated",'true')
+        router.push("/")
+        const authResp = await request("users/check_auth", "GET");
+        console.log(authResp)
+        } else {
+          setError("Ошибка" + ' ' + response.data.message)
+        } 
+
+      }catch(err) {
+        console.error('Ошибка при входе', err)
+      }
+
  }
- const checkAuth = async() => {
+
   
-  try {
-    const response = await axios.get("http://82.202.137.19/users/check_auth")
-    setIsAuthenticated(response.data.is_authenticated)
-    alert('Вы успешно зарегистрированы')
-  } catch(error) {
-    console.log(error)
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-
- }
- useEffect(() => {
-  console.log(isAuthenticated)
-  checkAuth(); // Проверяем авторизацию при загрузке компонента
-}, [isAuthenticated]);
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>

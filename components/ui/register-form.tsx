@@ -16,6 +16,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import useMyAxios from "@/app/composables/useMyAxios";
 
 
 export function RegisterForm({
@@ -24,7 +25,9 @@ export function RegisterForm({
 }: React.ComponentPropsWithoutRef<"div">) {
 
 // Функционал регистрации
- const [username, setUserName] = useState("")
+const { request } = useMyAxios()
+const [username, setUserName] = useState("")
+
  const [password, setPassword] = useState("")
  const [confirmPassword, setConfirmPassword] = useState("")
  const [error, setError] = useState("")
@@ -38,7 +41,7 @@ export function RegisterForm({
         return
     }
     try {
-          await axios.post("/users/register", qs.stringify({
+          await request("/users/register", 'POST', qs.stringify({
           username,
           password,
           password_confirm: confirmPassword
@@ -47,15 +50,7 @@ export function RegisterForm({
             'Content-Type': 'application/x-www-form-urlencoded'
           }
         })
-      
-        /* if (!response.ok) {
-          
-          throw new Error("Ошибка регистрации")
-        } */
 
-        // Сохраните токен в localStorage или в контексте
-    /*     localStorage.setItem("token", response.data.token) */
-        // Перенаправление на главную страницу
         router.push("/")
       } catch (error) {
         const errorMessage = error?.response ? error?.response?.data.message : "Ошибка регистрации";
