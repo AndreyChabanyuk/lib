@@ -2,24 +2,25 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
+import useMyAxios from "@/composables/useMyAxios";
 const AuthChecker = () => {
   const router = useRouter();
-
+  const { request } = useMyAxios()
   useEffect(() => {
     const checkAuth = () => {
-      const auth = localStorage.getItem("isAuthenticated");
-      if (auth === 'false') {
-        router.push('/login');
+      const auth = localStorage.getItem("is_authenticated");
+      if (auth === 'false' || !auth) {
+        router.push('/auth/login');
       }
     };
-
+   
     // Проверка аутентификации при монтировании компонента
     checkAuth();
 
     // Установка таймера на 20 минут (1200000 миллисекунд)
-    const timer = setInterval(() => {
-      localStorage.setItem("isAuthenticated", 'false');
+    const timer = setInterval(async () => {
+      localStorage.setItem("is_authenticated", 'false');  
+      await request("users/logout","GET")
       checkAuth();
     }, 1200000);
 

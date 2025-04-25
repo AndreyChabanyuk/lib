@@ -16,7 +16,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import useMyAxios from "@/app/composables/useMyAxios";
+import useMyAxios from "@/composables/useMyAxios";
 
 
 export function RegisterForm({
@@ -51,7 +51,7 @@ const [username, setUserName] = useState("")
           }
         })
 
-        router.push("/")
+        router.push("/auth/login")
       } catch (error) {
         const errorMessage = error?.response ? error?.response?.data.message : "Ошибка регистрации";
         setError(errorMessage)
@@ -100,14 +100,14 @@ const [username, setUserName] = useState("")
                 placeholder="Подтвердите пароль" required />
               </div>
               {error && <p className="text-red-500">{error}</p>}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" size="lg">
                 Зарегистрироваться
               </Button>
               
             </div>
             <div className="mt-4 text-center text-sm">
               У вас есть учетная запись?{" "}
-              <Link href="/login" className="underline underline-offset-4 text-base font-bold ">
+              <Link href="/auth/login" className="underline underline-offset-4 text-base font-bold ">
                 Войдите
               </Link>
             </div>

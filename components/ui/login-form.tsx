@@ -15,7 +15,7 @@ import Link from "next/link"
 import qs from "qs"
 import { useRouter } from "next/navigation"
 import {  useState } from "react"
-import useMyAxios from "@/app/composables/useMyAxios"
+import useMyAxios from "@/composables/useMyAxios"
 
 
 export function LoginForm({
@@ -34,7 +34,6 @@ export function LoginForm({
      e.preventDefault()
       try{
           const response = await request("users/login",'POST', 
-      
             qs.stringify({
               username,
               password,
@@ -44,17 +43,18 @@ export function LoginForm({
               }
           )
       console.log(response)
-        if (response.data == '') {
+        if (response.data.message == 'Успешный вход') {
         alert('Вы успешно авторизовались!')
-        localStorage.setItem("isAuthenticated",'true')
+        localStorage.setItem("is_authenticated",'true')
         router.push("/")
         const authResp = await request("users/check_auth", "GET");
         console.log(authResp)
         } else {
           setError("Ошибка" + ' ' + response.data.message)
         } 
-
+         setError(response.data.error)
       }catch(err) {
+        setError(err.response.data.error)
         console.error('Ошибка при входе', err)
       }
 
@@ -99,14 +99,14 @@ export function LoginForm({
                 placeholder="Введите пароль" required />
               </div>
               {error && <p className="text-red-500">{error}</p>}
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" size="lg">
                 Войти
               </Button>
               
             </div>
             <div className="mt-4 text-center text-sm">
               У вас нет учетной записи?{" "}
-              <Link href="/register" className="underline underline-offset-4 text-base font-bold ">
+              <Link href="/auth/register" className="underline underline-offset-4 text-base font-bold ">
                 Зарегистрируйтесь
               </Link>
             </div>
