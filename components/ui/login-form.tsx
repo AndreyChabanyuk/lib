@@ -14,7 +14,7 @@ import Link from "next/link"
 
 import qs from "qs"
 import { useRouter } from "next/navigation"
-import {  useState } from "react"
+import React, { useState } from "react"
 import useMyAxios from "@/composables/useMyAxios"
 
 
@@ -29,38 +29,39 @@ export function LoginForm({
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const router = useRouter()
-  
-  const handleSubmit = async (e) => {
-     e.preventDefault()
-      try{
-          const response = await request("users/login",'POST', 
-            qs.stringify({
-              username,
-              password,
-            }),
-              {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              }
-          )
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const response = await request("users/login", 'POST',
+        qs.stringify({
+          username,
+          password,
+        }),
+        {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      )
       console.log(response)
-        if (response.data.message == 'Успешный вход') {
+      if (response.data.message == 'Успешный вход') {
         alert('Вы успешно авторизовались!')
-        localStorage.setItem("is_authenticated",'true')
+        localStorage.setItem("is_authenticated", 'true')
         router.push("/")
         const authResp = await request("users/check_auth", "GET");
         console.log(authResp)
-        } else {
-          setError("Ошибка" + ' ' + response.data.message)
-        } 
-         setError(response.data.error)
-      }catch(err) {
-        setError(err.response.data.error)
-        console.error('Ошибка при входе', err)
+      } else {
+        setError("Ошибка" + ' ' + response.data.message)
       }
+      setError(response.data.error)
+    } catch (err: unknown) {
+      const errorMessage = (err as any)?.response?.data?.error || (err as Error).message || "Ошибка при входе";
+      setError(errorMessage);
+      console.error('Ошибка при входе', err);
+    }
 
- }
+  }
 
-  
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -68,7 +69,7 @@ export function LoginForm({
           <CardTitle className="text-2xl">Войдите в свою учетную запись</CardTitle>
           <CardDescription>
             Введите свой логин чтобы войти в аккаунт
-        
+
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,15 +95,15 @@ export function LoginForm({
                     Забыли пароль?
                   </a>
                 </div>
-                <Input id="password" type="password" 
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Введите пароль" required />
+                <Input id="password" type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Введите пароль" required />
               </div>
               {error && <p className="text-red-500">{error}</p>}
               <Button type="submit" className="w-full" size="lg">
                 Войти
               </Button>
-              
+
             </div>
             <div className="mt-4 text-center text-sm">
               У вас нет учетной записи?{" "}
