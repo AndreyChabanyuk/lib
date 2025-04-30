@@ -3,7 +3,7 @@ import { Exhibition } from "@/components/shared/Exhibition/exhibition";
 import useMyAxios from "@/composables/useMyAxios";
 import { useEffect, useState } from "react";
 import { ApiResponse } from "@/interfaces/exhibition";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
+import { MdArrowBack, MdArrowForward, MdSearch } from "react-icons/md";
 
 const ExhibitionsPage: React.FC = () => {
     const { request, loading, error, data } = useMyAxios<ApiResponse>();
@@ -69,18 +69,44 @@ const ExhibitionsPage: React.FC = () => {
     };
 
     return (
-        <>
+        <main>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Заголовок с поиском */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                    <div className="space-y-2">
+                        <h1 className="text-4xl md:text-5xl font-bold ">
+                            Выставки
+                        </h1>
+                        <p className="text-gray-600 dark:text-gray-400 text-lg">
+                            Исследуйте наши последние коллекции
+                        </p>
+                    </div>
+
+                    {/* Поле поиска (статичное) */}
+                    <div className="w-full md:w-72 relative">
+                        <input
+                            type="search"
+                            placeholder="Поиск выставок..."
+                            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            disabled
+                        />
+                        <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                    </div>
+                </div>
+            </div>
             {loading && <div>Загрузка...</div>}
             {error && <div>Ошибка при загрузке выставок</div>}
 
             {data?.items ? (
-                <ul>
-                    {data.items.map((exhibit) => (
-                        <li key={exhibit.id}>
-                            <Exhibition exhibition={exhibit} />
-                        </li>
-                    ))}
-                </ul>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
+                    <ul>
+                        {data.items.map((exhibit) => (
+                            <li key={exhibit.id}>
+                                <Exhibition exhibition={exhibit} />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             ) : !loading && <div>Нет данных для отображения</div>}
 
             <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2">
@@ -98,8 +124,8 @@ const ExhibitionsPage: React.FC = () => {
                         onClick={() => setPage(pageNumber)}
                         disabled={loading}
                         className={`px-3 py-2 rounded ${page === pageNumber
-                                ? "bg-black text-white"
-                                : "bg-transparent text-black hover:text-blue-500"
+                            ? "bg-black text-white"
+                            : "bg-transparent text-black hover:text-blue-500"
                             } disabled:opacity-50`}
                     >
                         {pageNumber}
@@ -115,7 +141,7 @@ const ExhibitionsPage: React.FC = () => {
                 </button>
             </div>
 
-        </>
+        </main>
     );
 };
 

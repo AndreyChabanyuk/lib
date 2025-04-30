@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import useMyAxios from "@/composables/useMyAxios";
 import Link from "next/link";
 
-
 export const Header = () => {
   const [error, setError] = useState(""); // исправлено: setError должна изменять значение [error, setError]
   const { request } = useMyAxios();
@@ -56,14 +55,26 @@ export const Header = () => {
 
   return (
     <div className={isAuthenticated ? "" : "hidden"}>
-      <header className="py-5 px-5 flex justify-between">
+      <header className="py-5 px-5 flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Левая часть – заголовок */}
         <div>
-          <h2 className="text-2xl">Информационный библиотечный комплекс</h2>
+          <h2 className="text-xl md:text-2xl text-center md:text-left">
+            Информационный библиотечный комплекс
+          </h2>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/">Главная</Link>
-          <Link href="/auth/register">Регистрация</Link>
-          <Button type="submit" className="w-max" onClick={logout}>
+        {/* Правая часть – меню навигации */}
+        <div className="flex flex-row items-center gap-2 md:gap-4 overflow-x-auto whitespace-nowrap">
+          <Link href="/" className="text-sm px-2 py-1 md:px-0 md:py-0">
+            Главная
+          </Link>
+          <Link href="/auth/register" className="text-sm px-2 py-1 md:px-0 md:py-0">
+            Регистрация
+          </Link>
+          <Button
+            type="submit"
+            className="w-max text-sm px-3 py-1 md:px-4 md:py-2"
+            onClick={logout}
+          >
             Выйти
           </Button>
         </div>
