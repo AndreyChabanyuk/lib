@@ -1,4 +1,4 @@
-import { ExhibitionType } from "@/app/exhibitions/page";
+import { ExhibitionType } from "@/app/(main)/exhibitions/page";
 import Image from "next/image";
 
 // Надо не сам интерфейс сделать, а добавить существующий

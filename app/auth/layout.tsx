@@ -1,5 +1,4 @@
 
-import { Footer } from "@/components/shared/Footer";
 import { ReactNode } from "react";
 
 
@@ -10,7 +9,6 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     <div className="flex min-h-screen flex-col">
        <h2 className="text-3xl mx-auto my-0">Информационный библиотечный комплекс</h2>
       <main className="flex-grow">{children}</main>
-      <Footer />
     </div>
   );
 };
