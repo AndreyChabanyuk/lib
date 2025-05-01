@@ -11,19 +11,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-
 import qs from "qs"
 import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 import useMyAxios from "@/composables/useMyAxios"
-
+import Image from "next/image"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-
-  // Функционал входа
   const { request } = useMyAxios()
   const [username, setUserName] = useState("")
   const [password, setPassword] = useState("")
@@ -42,40 +39,32 @@ export function LoginForm({
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       )
-      console.log(response)
       if (response.data.message == 'Успешный вход') {
-        alert('Вы успешно авторизовались!')
         localStorage.setItem("is_authenticated", 'true')
         router.push("/")
-        const authResp = await request("users/check_auth", "GET");
-        console.log(authResp)
       } else {
-        setError("Ошибка" + ' ' + response.data.message)
+        setError("Ошибка: " + response.data.message)
       }
-      setError(response.data.error)
     } catch (err: unknown) {
-      const errorMessage = (err as any)?.response?.data?.error || (err as Error).message || "Ошибка при входе";
-      setError(errorMessage);
-      console.error('Ошибка при входе', err);
+      setError((err as any)?.response?.data?.error || "Ошибка при входе");
     }
-
   }
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Войдите в свою учетную запись</CardTitle>
-          <CardDescription>
-            Введите свой логин чтобы войти в аккаунт
-
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
+      <Card className="overflow-hidden">
+        <div className="flex flex-col md:flex-row">
+          {/* Левая часть - форма */}
+          <div className="flex-1 flex flex-col p-6 md:min-w-[400px]">
+            <CardHeader className="px-0 pt-0 pb-4">
+              <CardTitle className="md:text-4xl md:py-5 text-[1.2em] md:text-center">Войдите в свою учетную запись</CardTitle>
+              <CardDescription>
+                Введите свой логин чтобы войти в аккаунт
+              </CardDescription>
+            </CardHeader>
+            
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-4">
+              <div className="space-y-2">
                 <Label htmlFor="email">Логин</Label>
                 <Input
                   id="text"
@@ -85,34 +74,50 @@ export function LoginForm({
                   required
                 />
               </div>
-              <div className="grid gap-2">
+              
+              <div className="space-y-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Пароль</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
+                  <a href="#" className="ml-auto text-sm underline">
                     Забыли пароль?
                   </a>
                 </div>
-                <Input id="password" type="password"
+                <Input 
+                  id="password" 
+                  type="password"
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Введите пароль" required />
+                  placeholder="Введите пароль" 
+                  required 
+                />
               </div>
+              
               {error && <p className="text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" size="lg">
-                Войти
-              </Button>
 
-            </div>
-            <div className="mt-4 text-center text-sm">
-              У вас нет учетной записи?{" "}
-              <Link href="/auth/register" className="underline underline-offset-4 text-base font-bold ">
-                Зарегистрируйтесь
-              </Link>
-            </div>
-          </form>
-        </CardContent>
+              <div className="mt-auto space-y-4">
+                <Button type="submit" className="w-full" size="lg">
+                  Войти
+                </Button>
+                <p className="text-center text-sm">
+                  Нет учетной записи?{" "}
+                  <Link href="/auth/register" className="font-bold underline">
+                    Зарегистрируйтесь
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
+          
+          {/* Правая часть - изображение (только на десктопах) */}
+          <div className="hidden md:block flex-1 relative pr-80 mr-5 md:aspect-[3/4]">
+            <Image 
+              src="/login.png" 
+              alt="Иллюстрация входа"
+              fill
+              className="object-cover rounded-2xl"
+              priority 
+            />
+          </div>
+        </div>
       </Card>
     </div>
   )
