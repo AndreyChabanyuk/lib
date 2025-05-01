@@ -10,7 +10,6 @@ const AuthChecker = () => {
     const checkAuth = () => {
       const auth = localStorage.getItem("is_authenticated");
       if (auth === 'false' || !auth) {
-        router.push('/auth/login');
       }
     };
    
