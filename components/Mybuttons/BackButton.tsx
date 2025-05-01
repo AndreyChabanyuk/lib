@@ -16,7 +16,7 @@ const BackButton = ({ className = '', customAction }: BackButtonProps) => {
     if (customAction){
         customAction();
     }else{
-        router.push("/");
+        router.back();
     }
   }
     return (
