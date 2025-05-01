@@ -54,7 +54,7 @@ export const Header = () => {
   };
 
   return (
-    <div className={isAuthenticated ? "" : "hidden"}>
+    <div>
       <header className="py-5 px-5 flex flex-col md:flex-row justify-between items-center gap-4">
         {/* Левая часть – заголовок */}
         <div>
@@ -67,12 +67,17 @@ export const Header = () => {
           <Link href="/" className="text-sm px-2 py-1 md:px-0 md:py-0">
             Главная
           </Link>
-          <Link href="/auth/register" className="text-sm px-2 py-1 md:px-0 md:py-0">
+          <Link href="/auth/register" className={isAuthenticated ? "hidden" : 
+            "w-max text-sm px-3 py-1 md:px-4 md:py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md"}>
             Регистрация
+          </Link>
+          <Link href="/auth/login" className={isAuthenticated ? "hidden" : 
+            "w-max text-sm px-3 py-1 md:px-4 md:py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md"}>
+            Войти
           </Link>
           <Button
             type="submit"
-            className="w-max text-sm px-3 py-1 md:px-4 md:py-2"
+            className={isAuthenticated ? "w-max text-sm px-3 py-1 md:px-4 md:py-2" : "hidden"}
             onClick={logout}
           >
             Выйти
