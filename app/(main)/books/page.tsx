@@ -9,6 +9,8 @@ const BookPage: React.FC = () => {
 
   const [selectedGenre, setSelectedGenre] = useState<string>("");
   const [selectedAuthor, setSelectedAuthor] = useState<string>("");
+  const [selectedSort, setSelectedSort] = useState<string>(""); 
+
   const [books, setBooks] = useState<Book[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -40,7 +42,8 @@ const BookPage: React.FC = () => {
         const params = new URLSearchParams();
         if (selectedAuthor) params.append('author_id', selectedAuthor);
         if (selectedGenre) params.append('genre_id', selectedGenre);
-        
+        if (selectedSort) params.append('sort_order', selectedSort);
+
         const response = await request(
           `library/books/?${params.toString()}`, 
           "GET"
@@ -52,7 +55,7 @@ const BookPage: React.FC = () => {
     };
 
     fetchFilteredBooks();
-  }, [selectedGenre, selectedAuthor]);
+  }, [selectedGenre, selectedAuthor, selectedSort]);
 
   return (
     <>
@@ -82,6 +85,15 @@ const BookPage: React.FC = () => {
               {author.name}
             </option>
           ))}
+        </select>
+
+        <select
+          value={selectedSort}
+          onChange={(e) => setSelectedSort(e.target.value)}
+        >
+          <option value="">Без сортировки</option>
+          <option value="asc">По возрастанию (А-Я)</option>
+          <option value="desc">По убыванию (Я-А)</option>
         </select>
       </div>
 

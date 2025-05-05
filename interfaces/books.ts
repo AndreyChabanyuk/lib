@@ -7,3 +7,11 @@ export interface Book {
     library_description: string;
     annotations: string;
 }
+export interface Author {
+  id: number;
+  name: string;
+}
+export interface Genre {
+  id: number;
+  name: string;
+}
