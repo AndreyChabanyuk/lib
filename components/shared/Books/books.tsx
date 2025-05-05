@@ -126,7 +126,7 @@ export const Books = ({ book }: BookProps) => {
                 />
                 <div className="mt-4 text-center">
                   <h2 className="text-2xl font-bold text-white drop-shadow-md">{book.title}</h2>
-                  <p className="text-lg text-white/80">{book.author} dsafas d</p>
+                  <p className="text-lg text-white/80">{book.author}</p>
                 </div>
               </div>
 
@@ -148,8 +148,7 @@ export const Books = ({ book }: BookProps) => {
                 <h1 className="font-bold">О книге</h1>
                 <p className="text-sm whitespace-pre-line">{book.annotations}</p>
                 <p className="text-sm whitespace-pre-line break-words">
-                  {book.library_description}gggggggggggggggggggggwkaAAAAAAAAAAAASDFJHHGASDKFJGSADFJKHASDGFJHASDGFJHKASDGFASJHDKFGASDJHFGASDJHKFGASDJHFGASDJHFGASDJHFGASDJHFGASDJFHGSADJHFGASDJFHGASD DFGASDJHFGASDJHFGSADHFGASDHJFGASDJHFGASDJHFFGASD SADHGF
-                  gggggggggggggggggggggwkaAAAAAAAAAAAASDFJHHGASDKFJGSADFJKHASDGFJHASDGFJHKASDGFASJHDKFGASDJHFGASDJHKFGASDJHFGASDJHFGASDJHFGASDJHFGASDJFHGSADJHFGASDJFHGASD DFGASDJHFGASDJHFGSADHFGASDHJFGASDJHFGASDJHFFGASD SADHGF SDAJHFGSDAJHFGASDJHFGASDJHFGSDAJH GSDJHFG ASDJHF GSDAJHF GASDJHF GSDAJH GSADJHF GASDJHFGSDJHF GADSHJGF SDAJH GFASDJHFG SDAJHF GSDAJHFG ASJDHG FSAJHDG FSDJAHGF ASJDHGF ASDJHGF ASDJHGF JSHADG FJHASGD FJHKASDGF JHKASDGF JHASDGF JHASG FJHSDG FHGSAD FJHSADGF HSADG F cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccd
+                  {book.library_description}
                 </p>
               </div>
             </div>
