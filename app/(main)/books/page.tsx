@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import useMyAxios from "@/composables/useMyAxios";
 import { Book, Author, Genre } from "@/interfaces/books";
 import { Books } from "@/components/shared/Books/books";
+import Autocomplete from "@/components/shared/Autocomplete";
 
 const BookPage: React.FC = () => {
   const { request, loading, error } = useMyAxios();
 
-  const [selectedGenre, setSelectedGenre] = useState<string>("");
-  const [selectedAuthor, setSelectedAuthor] = useState<string>("");
-  const [selectedSort, setSelectedSort] = useState<string>(""); 
+  const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
+  const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
+  const [selectedSort, setSelectedSort] = useState<string>("");
 
   const [books, setBooks] = useState<Book[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -39,15 +40,19 @@ const BookPage: React.FC = () => {
   useEffect(() => {
     const fetchFilteredBooks = async () => {
       try {
-        const params = new URLSearchParams();
-        if (selectedAuthor) params.append('author_id', selectedAuthor);
-        if (selectedGenre) params.append('genre_id', selectedGenre);
-        if (selectedSort) params.append('sort_order', selectedSort);
+        let url = `library/books/?`;
+        if (selectedAuthor) {
+          url += `author_id=${selectedAuthor.id}&`;
+        }
+        if (selectedGenre) {
+          url += `genre_id=${selectedGenre.id}&`;
+        }
+        if (selectedSort) {
+          url += `sort_order=${selectedSort}`;
+        }
+        url = url.replace(/&+$/, "");
 
-        const response = await request(
-          `library/books/?${params.toString()}`, 
-          "GET"
-        );
+        const response = await request(url, "GET");
         setBooks(response.data);
       } catch (err) {
         console.error("Ошибка фильтрации", err);
@@ -55,46 +60,46 @@ const BookPage: React.FC = () => {
     };
 
     fetchFilteredBooks();
-  }, [selectedGenre, selectedAuthor, selectedSort]);
+  }, [selectedAuthor, selectedGenre, selectedSort ]);
 
   return (
     <>
       {loading && <div>Загрузка...</div>}
       {error && <div>Ошибка при загрузке данных</div>}
       
+
       <div className="filters">
-        <select
-          value={selectedGenre}
-          onChange={(e) => setSelectedGenre(e.target.value)}
-        >
-          <option value="">Все жанры</option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.name}
-            </option>
-          ))}
-        </select>
+        <div className="filter-item">
+          <label>Автор:</label>
+          <Autocomplete<Author>
+            endpoint="library/authors/search/"
+            placeholder="Введите имя автора..."
+            labelField="name"
+            onSelect={(author) => setSelectedAuthor(author)}
+          />
+        </div>
 
-        <select
-          value={selectedAuthor}
-          onChange={(e) => setSelectedAuthor(e.target.value)}
-        >
-          <option value="">Все авторы</option>
-          {authors.map((author) => (
-            <option key={author.id} value={author.id}>
-              {author.name}
-            </option>
-          ))}
-        </select>
+        <div className="filter-item">
+          <label>Жанр:</label>
+          <Autocomplete<Genre>
+            endpoint="library/genres/search/"
+            placeholder="Введите название жанра..."
+            labelField="name"
+            onSelect={(genre) => setSelectedGenre(genre)}
+          />
+        </div>
 
-        <select
-          value={selectedSort}
-          onChange={(e) => setSelectedSort(e.target.value)}
-        >
-          <option value="">Без сортировки</option>
-          <option value="asc">По возрастанию (А-Я)</option>
-          <option value="desc">По убыванию (Я-А)</option>
-        </select>
+        <div className="filter-item">
+          <label>Сортировка:</label>
+          <select
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
+          >
+            <option value="">Без сортировки</option>
+            <option value="asc">По возрастанию (А-Я)</option>
+            <option value="desc">По убыванию (Я-А)</option>
+          </select>
+        </div>
       </div>
 
       <div className="book-list">
