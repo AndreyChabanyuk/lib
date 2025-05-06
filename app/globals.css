@@ -44,6 +44,7 @@
 }
 
 :root {
+  --background-image-section: url('/exhibition.jpg');
   --radius: 0.625rem;
   --background: #F5F6FB;
   --foreground: oklch(0.145 0 0);

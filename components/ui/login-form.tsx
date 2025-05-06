@@ -41,6 +41,7 @@ export function LoginForm({
       )
       if (response.data.message == 'Успешный вход') {
         localStorage.setItem("is_authenticated", 'true')
+        localStorage.setItem('role', response.data.role)
         router.push("/")
       } else {
         setError("Ошибка: " + response.data.message)

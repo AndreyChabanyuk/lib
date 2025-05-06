@@ -7,7 +7,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="pt-20 md:pt-10 text-center">
-        <BackButton />
+        <BackButton name={'Назад'}/>
         <h2 className="md:text-2xl">Информационный библиотечный комплекс</h2>
       </div>
       <main className="flex-grow flex items-center justify-center">{children}</main>

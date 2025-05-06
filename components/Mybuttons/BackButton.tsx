@@ -8,9 +8,10 @@ interface BackButtonProps {
   onClick?: () => void;
   className?: string;
   customAction?: () => void;
+  name: string
 }
 
-const BackButton = ({ className = '', customAction }: BackButtonProps) => {
+const BackButton = ({ className = '', customAction, name }: BackButtonProps) => {
   const router = useRouter();
   const handleClick = () => {
     if (customAction){
@@ -34,7 +35,7 @@ const BackButton = ({ className = '', customAction }: BackButtonProps) => {
         aria-label="Назад"
       >
         <MdArrowBack className="mx-4 my-2" />
-        Назад
+        {name}
       </button>
     </div>
   );
