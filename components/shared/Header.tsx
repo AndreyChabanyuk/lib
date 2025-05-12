@@ -17,14 +17,16 @@ export const Header = () => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [roleAdmin, setRoleAdmin] = useState('')
 	const isExhibitionPage = /^\/exhibitions\/[^/]+$/.test(pathname)
+	
 	// Убираем вызов localStorage здесь.
 	useEffect(() => {
+		
 		// Проверяем, что мы в окружении браузера (хотя "use client" уже гарантирует клиентскую часть)
 		if (typeof window !== 'undefined') {
 			const authStatus = localStorage.getItem('is_authenticated')
 			setIsAuthenticated(authStatus === 'true')
 			const role = localStorage.getItem('role')
-			if (role === 'reader') {
+			if (role === 'admin') {
 				setRoleAdmin(role)
 			}
 			// Добавляем обработчик события для обновления состояния при изменении localStorage
@@ -32,7 +34,7 @@ export const Header = () => {
 				const updatedAuthStatus = localStorage.getItem('is_authenticated')
 				const updatedRole = localStorage.getItem('role')
 				setIsAuthenticated(updatedAuthStatus === 'true')
-				if (updatedRole === 'reader') {
+				if (updatedRole === 'admin') {
 					setRoleAdmin(updatedRole)
 				}
 			}
@@ -83,7 +85,7 @@ export const Header = () => {
 					</Link>
 					<BackButton
 						className={
-							isExhibitionPage
+							isExhibitionPage && pathname !== '/exhibitions/create'
 								? 'relative w-max text-sm  bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md'
 								: 'hidden'
 						}
@@ -103,7 +105,7 @@ export const Header = () => {
 					<Link
 						href='/exhibitions/create'
 						className={
-							isAuthenticated && roleAdmin && !isExhibitionPage
+							isAuthenticated && roleAdmin === 'admin' && !isExhibitionPage
 								? 'w-max text-sm px-3 py-1 md:px-4 md:py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md'
 								: 'hidden'
 						}

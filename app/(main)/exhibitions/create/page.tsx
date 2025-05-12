@@ -32,14 +32,14 @@ export default function CreateExhibitionsPage() {
   const [page, setPage] = useState(1);
   const size = 10;
   const [totalPages, setTotalPages] = useState(1);
-
+  const [roleState, setRoleState] = useState(false)
   const [isModalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isPublished, setIsPublished] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [editingExhibition, setEditingExhibition] = useState<ExhibitionType | null>(null);
-
+ 
   useEffect(() => {
     const fetchList = async () => {
       try {
@@ -56,6 +56,11 @@ export default function CreateExhibitionsPage() {
   }, [page, listRequest]);
 
   useEffect(() => {
+    const roleAdmin = localStorage.getItem('role')
+    if(roleAdmin === 'admin'){
+      setRoleState(true)
+    }
+    
     if (createdExhibition) {
       setModalOpen(false);
       setTitle('');
@@ -128,7 +133,8 @@ export default function CreateExhibitionsPage() {
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-4">
+    
+    roleState && <main className="max-w-7xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <Link href="/exhibitions" className="flex items-center text-blue-600 hover:underline">
           <MdArrowBack size={24} />
