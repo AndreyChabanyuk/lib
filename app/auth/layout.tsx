@@ -1,13 +1,17 @@
-
+"use client"
 import BackButton from "@/components/Mybuttons/BackButton";
+import { useRouter } from 'next/navigation'
 import { ReactNode } from "react";
 
 
+
 const AuthLayout = ({ children }: { children: ReactNode }) => {
+  const router = useRouter()
   return (
     <div className="flex min-h-screen flex-col">
       <div className="pt-20 md:pt-10 text-center">
-        <BackButton name={'Назад'}/>
+        
+        <BackButton name={'Назад'} customAction={() => router.push('/')}/>
         <h2 className="md:text-2xl">Информационный библиотечный комплекс</h2>
       </div>
       <main className="flex-grow flex items-center justify-center">{children}</main>

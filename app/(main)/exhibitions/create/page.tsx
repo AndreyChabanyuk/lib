@@ -134,7 +134,7 @@ export default function CreateExhibitionsPage() {
 
   return (
     
-    roleState && <main className="max-w-7xl mx-auto p-4">
+    <main className="max-w-7xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <Link href="/exhibitions" className="flex items-center text-blue-600 hover:underline">
           <MdArrowBack size={24} />

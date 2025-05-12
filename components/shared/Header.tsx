@@ -47,7 +47,7 @@ export const Header = () => {
 			}
 		}
 	}, [])
-
+	
 	const logout = async (e: React.MouseEvent) => {
 		e.preventDefault()
 
@@ -84,12 +84,14 @@ export const Header = () => {
 						Главная
 					</Link>
 					<BackButton
+					     
 						className={
 							isExhibitionPage && pathname !== '/exhibitions/create'
 								? 'relative w-max text-sm  bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md'
 								: 'hidden'
 						}
 						name={'Вернуться к выставкам'}
+						customAction={() => router.push('/exhibitions')}
 					/>
 					<Link
 						href='/auth/register'
