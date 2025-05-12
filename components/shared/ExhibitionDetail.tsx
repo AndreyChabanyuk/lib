@@ -44,11 +44,7 @@ export default function ExhibitionDetail({ slug }: Props) {
   }, [isFixed, lastScrollY]);
 
   useEffect(() => {
-    if (selectedBook) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = selectedBook ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -63,14 +59,24 @@ export default function ExhibitionDetail({ slug }: Props) {
     );
   if (!data) return <p className="text-center py-20">Данных нет</p>;
 
+  // Функция для расчета классов сетки: максимум 3 колонки на мобильных,
+  // новые строки автоматически при >3 элементов
+  const getBookGridClasses = (section: ExhibitionSection) => {
+    const bookCount = section.content_blocks.filter(
+      (b) => b.type === 'book' && b.book
+    ).length;
+    const mobileCols =
+      bookCount === 1 ? 'grid-cols-1' : bookCount === 2 ? 'grid-cols-2' : 'grid-cols-3';
+    return `grid ${mobileCols} md:grid-cols-3 gap-4`;
+  };
+
   const imageUrl = data.image?.startsWith("http")
     ? data.image
     : new URL(data.image!, process.env.NEXT_PUBLIC_BASE_URL).toString();
-  // В компоненте ExhibitionDetail перед return
-  console.log("Полученные данные выставки:", JSON.stringify(data, null, 2));
+
   return (
     <div>
-      <div className="relative min-h-[70vh] bg-gray-200">
+      <div className="relative min-h-[50vh] bg-gray-200">
         {data.image && (
           <Image
             src={imageUrl}
@@ -80,28 +86,27 @@ export default function ExhibitionDetail({ slug }: Props) {
             unoptimized
           />
         )}
-        <h1 className="relative text-5xl p-5 text-white leading-tight">
+        <h1 className="relative text-3xl sm:text-5xl p-4 sm:p-5 text-white leading-tight">
           {data.title}
         </h1>
       </div>
 
-			<div className='flex p-15'>
-				<div className='w-[80%] p-5 space-y-10'>
-					{data.sections.map((section: ExhibitionSection) => (
-						<div key={section.id} id={`section-${section.id}`}>
-							<h2 className='text-4xl mb-4'>{section.title}</h2>
-							<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-								{section.content_blocks.map((block: ContentBlock) => {
-									if (block.type === 'text') {
-										return (
-											<div
-												key={block.id}
-												className='text-2xl mb-2 col-span-full prose max-w-none'
-												dangerouslySetInnerHTML={{ __html: block.text_content }}
-											/>
-										)
-									}
-
+      <div className="flex flex-col md:flex-row p-4 md:p-15">
+        <div className="w-full md:w-[80%] p-2 md:p-5 space-y-10">
+          {data.sections.map((section: ExhibitionSection) => (
+            <div key={section.id} id={`section-${section.id}`}>   
+              <h2 className="text-2xl sm:text-4xl mb-4">{section.title}</h2>
+              <div className={getBookGridClasses(section)}>
+                {section.content_blocks.map((block: ContentBlock) => {
+                  if (block.type === 'text') {
+                    return (
+                      <div
+                        key={block.id}
+                        className='text-base sm:text-2xl mb-2 col-span-full prose max-w-none'
+                        dangerouslySetInnerHTML={{ __html: block.text_content }}
+                      />
+                    )
+                  }
                   if (block.type === "book" && block.book) {
                     return (
                       <div
@@ -109,7 +114,6 @@ export default function ExhibitionDetail({ slug }: Props) {
                         className="group cursor-pointer relative"
                         onClick={() => setSelectedBook(block.book)}
                       >
-                        {/* Обертка для изображения */}
                         <div className="relative aspect-[3/4] bg-gray-50 rounded-lg overflow-hidden shadow-md">
                           {block.book.image_url && (
                             <Image
@@ -121,20 +125,17 @@ export default function ExhibitionDetail({ slug }: Props) {
                             />
                           )}
                         </div>
-
-                        {/* Подпись */}
-                        <div className="mt-4 text-center space-y-1">
-                          <h3 className="text-lg font-semibold text-gray-900">
+                        <div className="mt-2 text-center space-y-1">
+                          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                             {block.book.title}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-xs sm:text-sm text-gray-600">
                             {block.book.author}
                           </p>
                         </div>
                       </div>
                     );
                   }
-
                   return null;
                 })}
               </div>
@@ -144,9 +145,9 @@ export default function ExhibitionDetail({ slug }: Props) {
 
         <div
           ref={contentRef}
-          className={`pl-15 w-[20%] ${isFixed ? "fixed top-5 right-5" : ""}`}
+          className={`hidden sm:block pl-5 md:pl-15 w-full md:w-[20%] ${isFixed ? "fixed top-5 right-5" : "relative"}`}
         >
-          <h3 className="text-2xl mb-4">Содержание</h3>
+          <h3 className="text-xl sm:text-2xl mb-4">Содержание</h3>
           <nav>
             <ul className="space-y-2">
               {data.sections.map((section) => (
@@ -160,7 +161,7 @@ export default function ExhibitionDetail({ slug }: Props) {
                         sectionElement.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
+                    className="text-blue-600 hover:text-blue-800 transition-colors text-sm"
                   >
                     {section.title}
                   </span>
@@ -171,7 +172,6 @@ export default function ExhibitionDetail({ slug }: Props) {
         </div>
       </div>
 
-      {/* Модальное окно для книг */}
       <Modal
         size="full"
         isOpen={!!selectedBook}
@@ -186,9 +186,9 @@ export default function ExhibitionDetail({ slug }: Props) {
         }
       >
         {selectedBook && (
-          <>
+          <>            
             {isFullscreen ? (
-              <div className="fixed inset-0 md:inset-20 flex items-center justify-center">
+              <div className="fixed inset-0 flex items-center justify-center p-4">
                 <Image
                   src={`${process.env.NEXT_PUBLIC_BASE_URL}${selectedBook.image_url}`}
                   alt={selectedBook.title}
@@ -201,9 +201,9 @@ export default function ExhibitionDetail({ slug }: Props) {
                 />
               </div>
             ) : (
-              <div className="flex flex-col w-full md:flex-row gap-6">
-                <div className="relative md:w-1/3 cursor-zoom-in min-h-[200px]">
-                  <div className="absolute inset-0 overflow-hidden">
+              <div className="flex flex-col space-y-6 p-4">
+                <div className="relative w-full cursor-zoom-in min-h-[180px]">
+                  <div className="absolute inset-0 overflow-hidden rounded-lg">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_BASE_URL}${selectedBook.image_url}`}
                       alt={selectedBook.title}
@@ -217,15 +217,15 @@ export default function ExhibitionDetail({ slug }: Props) {
                     <Image
                       src={`${process.env.NEXT_PUBLIC_BASE_URL}${selectedBook.image_url}`}
                       alt={selectedBook.title}
-                      width={150}
-                      height={200}
-                      className="object-contain h-auto w-full shadow-accent-foreground"
+                      width={120}
+                      height={160}
+                      className="object-contain w-2/3 shadow-accent-foreground"
                     />
-                    <div className="mt-4 text-center">
-                      <h2 className="text-2xl font-bold text-white drop-shadow-md">
+                    <div className="mt-3 text-center">
+                      <h2 className="text-lg sm:text-2xl font-bold text-white drop-shadow-md">
                         {selectedBook.title}
                       </h2>
-                      <p className="text-lg text-white/80">
+                      <p className="text-sm sm:text-lg text-white/80">
                         {selectedBook.author}
                       </p>
                     </div>
@@ -240,17 +240,17 @@ export default function ExhibitionDetail({ slug }: Props) {
                     aria-label="Увеличить изображение"
                   >
                     <span className="bg-black/70 text-white p-3 rounded-full">
-                      <MagnifyingGlassIcon className="h-6 w-6" />
+                      <MagnifyingGlassIcon className="h-5 w-5" />
                     </span>
                   </button>
                 </div>
-                <div className="w-full md:w-2/3 space-y-4">
-                  <div className="overflow-y-auto rounded-lg p-3">
-                    <h1 className="font-bold text-2xl mb-4">О книге</h1>
-                    <p className="text-lg whitespace-pre-line">
+                <div className="w-full space-y-4">
+                  <div className="overflow-y-auto rounded-lg p-3 bg-white">
+                    <h1 className="font-bold text-xl mb-3">О книге</h1>
+                    <p className="text-sm sm:text-base whitespace-pre-line">
                       {selectedBook.annotations}
                     </p>
-                    <p className="text-lg whitespace-pre-line break-words mt-4">
+                    <p className="text-sm sm:text-base whitespace-pre-line break-words mt-3">
                       {selectedBook.library_description}
                     </p>
                   </div>

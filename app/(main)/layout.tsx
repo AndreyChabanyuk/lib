@@ -1,18 +1,20 @@
-import { Header } from "@/components/shared/Header";
-import { Footer } from "@/components/shared/Footer";
-import AuthChecker from "@/components/AuthChecker";
+import AuthChecker from '@/components/AuthChecker'
+import { Footer } from '@/components/shared/Footer'
+import { Header } from '@/components/shared/Header'
 
 export default function MainLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode
 }) {
-  return (
-    <>
-      <AuthChecker />
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </>
-  );
+	return (
+		<>
+			<AuthChecker />
+			<Header />
+			<div className='min-h-screen flex flex-col'>
+				<main className='flex-1'>{children}</main>
+				<Footer className='mt-auto' />
+			</div>
+		</>
+	)
 }
