@@ -49,7 +49,7 @@ export const Books = ({ book }: BookProps) => {
     <CardContent className="flex flex-col items-start">
       <h3 className="text-sm truncate">{book.title}</h3>
       <p className="text-xs text-muted-foreground truncate">
-        {book.author}fsdfsdfsd
+        {book.author}
       </p>
     </CardContent>
   </div>

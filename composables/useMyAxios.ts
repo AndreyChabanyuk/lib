@@ -1,36 +1,46 @@
-import { useState } from 'react';
-import axios from 'axios';
+import axios from 'axios'
+import { useCallback, useState } from 'react'
 
+const useMyAxios = <T = unknown>() => {
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(null)
+	const [data, setData] = useState<T | null>(null)
 
-const useMyAxios = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
+	const request = useCallback(
+		async (
+			url: string,
+			method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+			body?: any,
+			headers?: any
+		) => {
+			setLoading(true)
+			setError(null)
 
-  const request = async (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, headers?: any) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const fullUrl = new URL(url, process.env.NEXT_PUBLIC_BASE_URL).toString()
-      const response = await axios({
-        url: fullUrl,
-        method,
-        data: body,
-        headers: headers
-      });
-      
-      setData(response.data);
-      return response; // Возвращаем данные для дальнейшего использования
-    } catch (err) {
-      setError(err);
-      throw err; // Пробрасываем ошибку для обработки в компоненте
-    } finally {
-      setLoading(false);
-    }
-  };
+			try {
+				const fullUrl = new URL(
+					url,
+					process.env.NEXT_PUBLIC_BASE_URL
+				).toString()
+				const response = await axios({
+					url: fullUrl,
+					method,
+					data: body,
+					headers: headers,
+				})
 
-  return { request, loading, error, data };
-};
+				setData(response.data)
+				return response
+			} catch (err) {
+				setError(err)
+				throw err
+			} finally {
+				setLoading(false)
+			}
+		},
+		[]
+	)
 
-export default useMyAxios;
+	return { request, loading, error, data }
+}
+
+export default useMyAxios
