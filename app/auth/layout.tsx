@@ -1,21 +1,29 @@
-
-import BackButton from "@/components/Mybuttons/BackButton";
-import { ReactNode } from "react";
-
+import BackButton from '@/components/Mybuttons/BackButton'
+import Image from 'next/image'
+import { ReactNode } from 'react'
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <div className="pt-20 md:pt-10 text-center">
-        <BackButton name={'Назад'}/>
-        <h2 className="md:text-2xl">Информационный библиотечный комплекс</h2>
-      </div>
-      <main className="flex-grow flex items-center justify-center">{children}</main>
-    </div>
-  );
-};
+	return (
+		<div className='flex min-h-screen flex-col'>
+			<div className='pt-20 md:pt-10 text-center'>
+				<BackButton name={'Назад'} />
+				<div className='flex justify-center'>
+					<Image
+						src='/icons/main_icon.svg'
+						alt='Color Picker'
+						width={500}
+						height={200}
+					/>
+				</div>
+			</div>
+			<main className='flex items-center justify-center'>
+				{children}
+			</main>
+		</div>
+	)
+}
 
-export default AuthLayout;
+export default AuthLayout
 
 /* export default function RootLayout({
   children,
@@ -36,4 +44,3 @@ export default AuthLayout;
     </html>
   );
 } */
-

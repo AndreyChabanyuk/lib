@@ -55,80 +55,83 @@ export function RegisterForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden">
-        <div className="flex flex-col md:flex-row">
-          {/* Левая часть - форма */}
-          <div className="flex-1 flex flex-col p-6 md:min-w-[400px]">
-            <CardHeader className="px-0 pt-0 pb-4">
-              <CardTitle className="md:text-4xl md:py-5 text-[1.2em] md:text-center">Создайте учетную запись</CardTitle>
-              <CardDescription>
-                Заполните форму для регистрации
-              </CardDescription>
-            </CardHeader>
+    <div className="min-h-screen flex justify-center px-4">
+      <div className="md:min-w-[800px] w-full max-w-5xl" {...props}>
+        <Card className="overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+            {/* Левая часть - форма */}
+            <div className="flex-1 flex flex-col p-6 md:min-w-[400px]">
+              <CardHeader className="px-0 pt-0 pb-4">
+                <CardTitle className="md:text-4xl md:py-5 text-[1.2em] md:text-center">Создайте учетную запись</CardTitle>
+                <CardDescription>
+                  Заполните форму для регистрации
+                </CardDescription>
+              </CardHeader>
+              
+              <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Логин</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    onChange={(e) => setUserName(e.target.value)}
+                    placeholder="Введите логин"
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="password">Пароль</Label>
+                  <Input 
+                    id="password" 
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Введите пароль" 
+                    required 
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
+                  <Input 
+                    id="confirmPassword" 
+                    type="password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Повторите пароль" 
+                    required 
+                  />
+                </div>
+                
+                {error && <p className="text-red-500">{error}</p>}
+
+                <div className="mt-auto space-y-4">
+                  <Button type="submit" className="w-full" size="lg">
+                    Зарегистрироваться
+                  </Button>
+                  <p className="text-center text-sm">
+                    Уже есть аккаунт?{" "}
+                    <Link href="/auth/login" className="font-bold underline">
+                      Войти
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
             
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Логин</Label>
-                <Input
-                  id="username"
-                  type="text"
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Введите логин"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Пароль</Label>
-                <Input 
-                  id="password" 
-                  type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Введите пароль" 
-                  required 
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
-                <Input 
-                  id="confirmPassword" 
-                  type="password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Повторите пароль" 
-                  required 
-                />
-              </div>
-              
-              {error && <p className="text-red-500">{error}</p>}
-
-              <div className="mt-auto space-y-4">
-                <Button type="submit" className="w-full" size="lg">
-                  Зарегистрироваться
-                </Button>
-                <p className="text-center text-sm">
-                  Уже есть аккаунт?{" "}
-                  <Link href="/auth/login" className="font-bold underline">
-                    Войти
-                  </Link>
-                </p>
-              </div>
-            </form>
+            {/* Правая часть - изображение (только на десктопах) */}
+            <div className="hidden lg:block flex-1 relative min-w-[400px] max-w-[500px]">
+              <Image 
+                src="/register.png" 
+                alt="Иллюстрация регистрации"
+                width={500}
+                height={667}
+                className="object-cover rounded-2xl w-full h-auto"
+                priority 
+              />
+            </div>
           </div>
-          
-          {/* Правая часть - изображение (только на десктопах) */}
-          <div className="hidden md:block flex-1 relative pr-80 mr-5 md:aspect-[3/4]">
-            <Image 
-              src="/register.png" 
-              alt="Иллюстрация регистрации"
-              fill
-              className="object-cover rounded-2xl"
-              priority 
-            />
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

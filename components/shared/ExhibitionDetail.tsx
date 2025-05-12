@@ -1,5 +1,4 @@
 'use client'
-
 import { Modal } from '@/components/ui/modal'
 import useMyAxios from '@/composables/useMyAxios'
 import {
@@ -95,9 +94,11 @@ export default function ExhibitionDetail({ slug }: Props) {
 								{section.content_blocks.map((block: ContentBlock) => {
 									if (block.type === 'text') {
 										return (
-											<p key={block.id} className='text-2xl mb-2 col-span-full'>
-												{block.text_content}
-											</p>
+											<div
+												key={block.id}
+												className='text-2xl mb-2 col-span-full prose max-w-none'
+												dangerouslySetInnerHTML={{ __html: block.text_content }}
+											/>
 										)
 									}
 

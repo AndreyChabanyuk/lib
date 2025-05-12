@@ -1,12 +1,11 @@
 'use client'
-import { Button } from '../ui/button'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
 import useMyAxios from '@/composables/useMyAxios'
+import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import BackButton from '../Mybuttons/BackButton'
-
+import { Button } from '../ui/button'
 
 export const Header = () => {
 	const [error, setError] = useState('') // исправлено: setError должна изменять значение [error, setError]
@@ -71,11 +70,15 @@ export const Header = () => {
 		<div>
 			<header className='py-5 px-5 flex flex-col md:flex-row justify-between items-center gap-4'>
 				{/* Левая часть – заголовок */}
-				<div>
-					<h2 className='text-xl md:text-2xl text-center md:text-left'>
-						Информационный библиотечный комплекс
-					</h2>
-				</div>
+				<Link href='/'>
+					<Image
+						src='/icons/main_icon.svg'
+						alt='Color Picker'
+						width={250}
+						height={200}
+						className='cursor-pointer'
+					/>
+				</Link>
 				{/* Правая часть – меню навигации */}
 				<div className='flex flex-row items-center gap-2 md:gap-4 overflow-x-auto whitespace-nowrap'>
 					<Link href='/' className='text-sm px-2 py-1 md:px-0 md:py-0'>

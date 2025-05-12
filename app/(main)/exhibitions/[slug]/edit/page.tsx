@@ -1,38 +1,32 @@
 'use client'
 
+import { RichTextEditor } from '@/components/RichTextEditor'
 import BookSelector from '@/components/shared/BookSelector'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
+import { api } from '@/composables/api'
+import { BookInfo } from '@/interfaces/books'
 import {
 	ContentBlock,
 	ExhibitionSection,
 	ExhibitionType,
 } from '@/interfaces/exhibition'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
-import axios from 'axios'
+import DOMPurify from 'dompurify'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-interface BookInfo {
-	id: number
-	title: string
-	cover_url?: string
-}
-
-const api = axios.create({
-	baseURL: 'http://82.202.137.19/v2',
-	timeout: 10000,
-	headers: { 'Content-Type': 'application/json' },
-})
-
 export default function ExhibitionEditor() {
+	// Получение параметра slug из URL
 	const { slug } = useParams() as { slug?: string }
 
+	// Состояния компонента
 	const [exhibition, setExhibition] = useState<ExhibitionType | null>(null)
 	const [bookDetails, setBookDetails] = useState<Record<number, BookInfo>>({})
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
+	// Состояния для управления модальными окнами
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [editingSection, setEditingSection] =
 		useState<ExhibitionSection | null>(null)
@@ -40,10 +34,12 @@ export default function ExhibitionEditor() {
 	const [editingSectionTitle, setEditingSectionTitle] =
 		useState<ExhibitionSection | null>(null)
 
+	// Состояния формы (локальное состояние для контента)
 	const [formType, setFormType] = useState<'text' | 'book'>('text')
-	const [textContent, setTextContent] = useState('')
+	const [htmlContent, setHtmlContent] = useState('')
 	const [bookId, setBookId] = useState<number | ''>('')
 
+	// Загрузка данных выставки
 	const loadExhibition = () => {
 		if (!slug) {
 			setError('Slug не указан')
@@ -63,8 +59,11 @@ export default function ExhibitionEditor() {
 			.finally(() => setLoading(false))
 	}
 
+	// Загрузка информации о книгах
 	useEffect(() => {
 		if (!exhibition) return
+
+		// Получение уникальных ID книг из контент-блоков
 		const ids = Array.from(
 			new Set(
 				exhibition.sections
@@ -74,17 +73,17 @@ export default function ExhibitionEditor() {
 			)
 		)
 
+		// Функция загрузки данных о книге
 		const fetchBookDetails = async (id: number) => {
-      console.log("[FRONTEND] Fetching book ID:", id);
 			try {
-				const response = await api.get<BookInfo>(`/library/books/${id}`);
-        console.log("[FRONTEND] Response:", response.data);
+				const response = await api.get<BookInfo>(`/library/books/${id}`)
 				setBookDetails(prev => ({ ...prev, [id]: response.data }))
 			} catch (error) {
-				console.error('Error fetching book details:', error)
+				console.error('Ошибка загрузки информации о книге:', error)
 			}
 		}
 
+		// Загрузка данных для каждой книги
 		ids.forEach(id => {
 			if (!bookDetails[id]) {
 				fetchBookDetails(id)
@@ -92,10 +91,45 @@ export default function ExhibitionEditor() {
 		})
 	}, [exhibition])
 
+	// Первоначальная загрузка выставки
 	useEffect(() => {
 		loadExhibition()
 	}, [slug])
 
+	// Обновление состояний формы при редактировании существующего контента
+	useEffect(() => {
+		if (editingBlock) {
+			setFormType(editingBlock.type)
+			setHtmlContent(editingBlock.text_content || '')
+			setBookId(editingBlock.book_id || '')
+		} else {
+			// Если переходим к созданию нового блока, сбрасываем поля
+			setFormType('text')
+			setHtmlContent('')
+			setBookId('')
+		}
+	}, [editingBlock])
+
+	// Методы управления модальным окном
+	const openModal = () => {
+		setIsModalOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsModalOpen(false)
+		// Добавим задержку для анимации закрытия
+		setTimeout(() => {
+			setEditingBlock(null)
+			setEditingSection(null)
+			setEditingSectionTitle(null)
+			// Сброс полей формы
+			setFormType('text')
+			setHtmlContent('')
+			setBookId('')
+		}, 300)
+	}
+
+	// Обработчик создания раздела
 	const handleCreateSection = (data: Partial<ExhibitionSection>) => {
 		if (!slug) return
 		setLoading(true)
@@ -103,7 +137,7 @@ export default function ExhibitionEditor() {
 			.post(`/exhibitions/${slug}/sections`, data)
 			.then(() => {
 				loadExhibition()
-				setIsModalOpen(false)
+				closeModal()
 			})
 			.catch(err =>
 				setError(err.response?.data?.detail || 'Ошибка создания раздела')
@@ -111,6 +145,7 @@ export default function ExhibitionEditor() {
 			.finally(() => setLoading(false))
 	}
 
+	// Обработчик обновления раздела
 	const handleUpdateSection = (data: Partial<ExhibitionSection>) => {
 		if (!slug || !editingSectionTitle) return
 		setLoading(true)
@@ -118,8 +153,7 @@ export default function ExhibitionEditor() {
 			.put(`/exhibitions/${slug}/sections/${editingSectionTitle.id}`, data)
 			.then(() => {
 				loadExhibition()
-				setIsModalOpen(false)
-				setEditingSectionTitle(null)
+				closeModal()
 			})
 			.catch(err =>
 				setError(err.response?.data?.detail || 'Ошибка обновления раздела')
@@ -127,28 +161,19 @@ export default function ExhibitionEditor() {
 			.finally(() => setLoading(false))
 	}
 
-	const handleDeleteSection = (sectionId: number) => {
-		if (!slug) return
-		if (!confirm('Удалить этот раздел вместе со всем содержимым?')) return
-		setLoading(true)
-		api
-			.delete(`/exhibitions/${slug}/sections/${sectionId}`)
-			.then(() => loadExhibition())
-			.catch(err =>
-				setError(err.response?.data?.detail || 'Ошибка удаления раздела')
-			)
-			.finally(() => setLoading(false))
-	}
-
+	// Обработчик добавления/обновления контента
 	const handleAddOrUpdateContent = () => {
 		if (!slug || !editingSection) return
+
 		if (formType === 'book' && !bookId) {
 			setError('Выберите книгу')
 			return
 		}
+
+		// Подготовка данных для отправки
 		const data: any = {
 			type: formType,
-			text_content: formType === 'text' ? textContent : null,
+			text_content: formType === 'text' ? htmlContent : null,
 			book_id: formType === 'book' ? Number(bookId) : null,
 		}
 
@@ -158,11 +183,11 @@ export default function ExhibitionEditor() {
 			? `/exhibitions/${slug}/sections/${editingSection.id}/content/${editingBlock.id}`
 			: `/exhibitions/${slug}/sections/${editingSection.id}/content`
 
+		// Отправка запроса
 		api[method](url, data)
 			.then(() => {
 				loadExhibition()
-				setIsModalOpen(false)
-				setEditingBlock(null)
+				closeModal()
 			})
 			.catch(err => {
 				let errorMsg = err.message || 'Ошибка сохранения контента'
@@ -176,6 +201,21 @@ export default function ExhibitionEditor() {
 			.finally(() => setLoading(false))
 	}
 
+	// Обработчик удаления раздела
+	const handleDeleteSection = (sectionId: number) => {
+		if (!slug) return
+		if (!confirm('Удалить этот раздел вместе со всем содержимым?')) return
+		setLoading(true)
+		api
+			.delete(`/exhibitions/${slug}/sections/${sectionId}`)
+			.then(() => loadExhibition())
+			.catch(err =>
+				setError(err.response?.data?.detail || 'Ошибка удаления раздела')
+			)
+			.finally(() => setLoading(false))
+	}
+
+	// Обработчик удаления контента
 	const handleDeleteContent = (sectionId: number, block: ContentBlock) => {
 		if (!slug) return
 		if (!confirm('Удалить этот блок?')) return
@@ -191,23 +231,25 @@ export default function ExhibitionEditor() {
 	}
 
 	useEffect(() => {
-		if (editingBlock) {
-			setFormType(editingBlock.type)
-			setTextContent(editingBlock.text_content || '')
-			setBookId(editingBlock.book_id || '')
-		} else {
-			setFormType('text')
-			setTextContent('')
-			setBookId('')
-		}
-	}, [editingBlock])
+  if (editingBlock) {
+    setFormType(editingBlock.type);
+    setHtmlContent(editingBlock.text_content || '');
+    setBookId(editingBlock.book_id || '');
+  } else {
+    setFormType('text');
+    setHtmlContent('');
+    setBookId('');
+  }
+}, [editingBlock, isModalOpen]);
 
+	// Отображение состояния загрузки и ошибок
 	if (!slug)
 		return <div className='p-4 text-red-600'>Неверный URL — нет slug</div>
 	if (loading) return <div className='p-4'>Загрузка...</div>
 	if (error) return <div className='p-4 text-red-600'>{error}</div>
 	if (!exhibition) return <div className='p-4'>Выставка не найдена</div>
 
+	// Основной интерфейс редактора
 	return (
 		<div className='relative p-4 space-y-6'>
 			<h1 className='text-3xl font-bold'>{exhibition.title}</h1>
@@ -220,7 +262,7 @@ export default function ExhibitionEditor() {
 							<button
 								onClick={() => {
 									setEditingSectionTitle(section)
-									setIsModalOpen(true)
+									openModal()
 								}}
 								className='text-gray-600 hover:text-blue-600'
 								title='Редактировать раздел'
@@ -242,12 +284,13 @@ export default function ExhibitionEditor() {
 							key={block.id}
 							className='p-4 bg-gray-50 rounded flex flex-col gap-2 relative group'
 						>
+							{/*Кнокпи*/}
 							<div className='absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition'>
 								<button
 									onClick={() => {
 										setEditingSection(section)
 										setEditingBlock(block)
-										setIsModalOpen(true)
+										setTimeout(() => setIsModalOpen(true), 10)
 									}}
 									className='text-gray-600 hover:text-blue-600'
 									title='Редактировать'
@@ -265,13 +308,22 @@ export default function ExhibitionEditor() {
 
 							<div className='text-sm text-gray-500'>Тип: {block.type}</div>
 
-							{block.type === 'text' && <div>{block.text_content}</div>}
+							{block.type === 'text' && (
+								<div
+									className='prose max-w-none'
+									dangerouslySetInnerHTML={{
+										__html: DOMPurify.sanitize(block.text_content || ''),
+									}}
+								/>
+							)}
 
 							{block.type === 'book' && (
 								<div className='flex items-center space-x-4'>
-									{bookDetails[block.book_id!]?.image_url && (
+									{bookDetails[block.book_id!]?.cover_url && (
 										<img
-											src={`http://82.202.137.19${bookDetails[block.book_id!].image_url}`}
+											src={`http://82.202.137.19${
+												bookDetails[block.book_id!].cover_url
+											}`}
 											alt={bookDetails[block.book_id!].title}
 											className='w-16 h-24 object-cover rounded'
 										/>
@@ -288,7 +340,7 @@ export default function ExhibitionEditor() {
 						onClick={() => {
 							setEditingSection(section)
 							setEditingBlock(null)
-							setIsModalOpen(true)
+							openModal()
 						}}
 					>
 						+ Контент
@@ -302,7 +354,7 @@ export default function ExhibitionEditor() {
 						setEditingSection(null)
 						setEditingBlock(null)
 						setEditingSectionTitle(null)
-						setIsModalOpen(true)
+						openModal()
 					}}
 					variant='primary'
 				>
@@ -311,12 +363,9 @@ export default function ExhibitionEditor() {
 			</div>
 
 			<Modal
+				key={editingBlock ? `edit-${editingBlock.id}` : 'new-content'}
 				isOpen={isModalOpen}
-				onClose={() => {
-					setIsModalOpen(false)
-					setEditingBlock(null)
-					setEditingSectionTitle(null)
-				}}
+				onClose={closeModal}
 				title={
 					editingBlock
 						? 'Редактировать контент'
@@ -326,10 +375,10 @@ export default function ExhibitionEditor() {
 						? 'Редактировать раздел'
 						: 'Новый раздел'
 				}
-				size='lg'
+				size='full'
 			>
 				<div className='p-6'>
-					{editingSection ? (
+					{editingSection || editingBlock ? (
 						<form
 							className='space-y-4'
 							onSubmit={e => {
@@ -359,19 +408,17 @@ export default function ExhibitionEditor() {
 									)}
 								</div>
 							) : (
-								<textarea
-									value={textContent}
-									onChange={e => setTextContent(e.target.value)}
-									className='w-full p-2 border rounded'
-									placeholder='Введите текст'
+								<RichTextEditor
+									key={
+										editingBlock ? `editor-${editingBlock.id}` : 'new-editor'
+									}
+									content={htmlContent}
+									onChange={setHtmlContent}
 								/>
 							)}
 
 							<div className='flex gap-2 justify-end'>
-								<Button
-									variant='secondary'
-									onClick={() => setIsModalOpen(false)}
-								>
+								<Button variant='secondary' onClick={closeModal}>
 									Отмена
 								</Button>
 								<Button type='submit' variant='primary'>
@@ -385,10 +432,7 @@ export default function ExhibitionEditor() {
 							onSubmit={
 								editingSectionTitle ? handleUpdateSection : handleCreateSection
 							}
-							onCancel={() => {
-								setIsModalOpen(false)
-								setEditingSectionTitle(null)
-							}}
+							onCancel={closeModal}
 						/>
 					)}
 				</div>
@@ -397,6 +441,7 @@ export default function ExhibitionEditor() {
 	)
 }
 
+// Компонент формы для создания/редактирования разделов
 function SectionForm({
 	initialData,
 	onSubmit,
@@ -406,6 +451,7 @@ function SectionForm({
 	onSubmit: (data: Partial<ExhibitionSection>) => void
 	onCancel: () => void
 }) {
+	// Поле вводится с начальным значением, если editingSectionTitle передан
 	const [title, setTitle] = useState<string>(initialData?.title ?? '')
 	return (
 		<form

@@ -24,3 +24,4 @@ export interface BookInfo {
   genres?: string[]
   year_of_publication?: string
 }
+
