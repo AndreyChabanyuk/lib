@@ -1,6 +1,9 @@
-import BackButton from '@/components/Mybuttons/BackButton'
+"use client"
+import BackButton from "@/components/Mybuttons/BackButton";
+import { useRouter } from 'next/navigation'
+import { ReactNode } from "react";
 import Image from 'next/image'
-import { ReactNode } from 'react'
+
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
 	return (

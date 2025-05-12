@@ -7,6 +7,7 @@ const AuthChecker = () => {
   const router = useRouter();
   const { request } = useMyAxios()
   useEffect(() => {
+    
     const checkAuth = () => {
       const auth = localStorage.getItem("is_authenticated");
       if (auth === 'false' || !auth) {
