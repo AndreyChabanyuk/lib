@@ -19,9 +19,10 @@ export interface ExhibitionType {
   slug: string;
   image?: string;
   description?: string;
-  is_published: boolean;
-  created_at: string;
-  published_at?: string;
+  isPublished: boolean;
+  createdAt: string;
+  is_published?: string;
+  author: string; 
   sections: ExhibitionSection[];
 }
 

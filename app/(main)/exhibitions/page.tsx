@@ -1,7 +1,7 @@
 'use client'
 import { Exhibition } from '@/components/shared/Exhibition/exhibition'
 import useMyAxios from '@/composables/useMyAxios'
-import { ApiResponse, Exhibition as ExhibitionType } from '@/interfaces/exhibition'
+import { ApiResponse, ExhibitionType } from '@/interfaces/exhibition'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { MdArrowBack, MdArrowForward, MdSearch } from 'react-icons/md'
@@ -54,6 +54,7 @@ const ExhibitionsPage: React.FC = () => {
                 const params = new URLSearchParams({
                     page: page.toString(),
                     size: size.toString(),
+                    published: 'true'
                 })
 
                 if (searchQuery) params.append('search', searchQuery)
@@ -126,7 +127,7 @@ const ExhibitionsPage: React.FC = () => {
 					<ul>
 						{data.items.map(exhibit => (
 							<Link
-								href={`/exhibitions/${exhibit.slug}`} // Используем slug из данных
+								href={`/exhibitions/${exhibit.slug}`}
 								key={exhibit.id}
 							>
 								<Exhibition exhibition={exhibit} />

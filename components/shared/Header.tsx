@@ -107,7 +107,7 @@ export const Header = () => {
             Админ панель
           </Link>
 					<Link
-            href='/exhibitions/dashboard'
+            href='/exhibitions/create'
             className={
               isAuthenticated && role === 'librarian' && !isExhibitionPage
                 ? 'w-max text-sm px-3 py-1 md:px-4 md:py-2 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 rounded-md'

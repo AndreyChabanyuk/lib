@@ -2,6 +2,7 @@
 
 import { Color } from '@tiptap/extension-color'
 import FontFamily from '@tiptap/extension-font-family'
+import { Image as TiptapImage } from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
@@ -11,7 +12,6 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
-import '../app/(main)/exhibitions/[slug]/edit/tiptap.css'
 
 export const RichTextEditor = ({ content, onChange }) => {
 	const [search, setSearch] = useState('')
@@ -25,6 +25,9 @@ export const RichTextEditor = ({ content, onChange }) => {
 			Underline,
 			FontFamily,
 			Typography,
+			TiptapImage.configure({
+				inline: true,
+			}),
 			Link.configure({
 				openOnClick: false,
 				autolink: true,
@@ -89,6 +92,14 @@ export const RichTextEditor = ({ content, onChange }) => {
 				.run()
 		} catch (e) {
 			alert(e.message)
+		}
+	}, [editor])
+
+	const addImage = useCallback(() => {
+		const url = window.prompt('URL')
+
+		if (url) {
+			editor.chain().focus().setImage({ src: url }).run()
 		}
 	}, [editor])
 
@@ -214,6 +225,7 @@ export const RichTextEditor = ({ content, onChange }) => {
 							height={iconSize}
 						/>
 					</button>
+					<button onClick={addImage}>Set image</button>
 					<button
 						onClick={() => editor.chain().focus().toggleBold().run()}
 						className={

@@ -1,21 +1,17 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
   publicRuntimeConfig: {
     baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   },
-};
-module.exports = {
   images: {
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "82.202.137.19",
-        port: "",
-        pathname: "/static/**",
-      },
-    ],
+    domains: ['exhibitdes.ru'],
   },
+  // <-- именно здесь, на верхнем уровне конфига, а не внутри publicRuntimeConfig
+  allowedDevOrigins: [
+    'http://localhost:3000',
+    'http://26.0.197.27:3000',
+    // если заходите без указания порта:
+    'http://26.0.197.27',
+  ],
 };
-export default nextConfig;
+
+module.exports = nextConfig;

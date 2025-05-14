@@ -40,7 +40,8 @@ export function LoginForm({
 					'Content-Type': 'application/x-www-form-urlencoded',
 				}
 			)
-			if (response.data.message == 'Успешный вход') {
+
+			if (response.data.message === 'Успешный вход') {
 				localStorage.setItem('is_authenticated', 'true')
 				localStorage.setItem('role', response.data.role)
 				router.push('/')

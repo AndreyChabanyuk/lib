@@ -14,6 +14,7 @@ export const Exhibition = ({ exhibition }: ExhibitionProps) => {
 
 	const createdDate = new Date(exhibition.created_at)
 	const formattedCreateDate = createdDate.toLocaleDateString('ru-RU', options)
+
 	return (
 		<div className='bg-white flex flex-col md:flex-row items-center p-4 cursor-pointer hover:shadow-lg transition-shadow mb-1'>
 			{/* Левая часть – фотография */}
@@ -33,6 +34,9 @@ export const Exhibition = ({ exhibition }: ExhibitionProps) => {
 				<p className='text-gray-700 mb-2 text-sm md:text-base'>
 					{exhibition.description}
 				</p>
+				<p className='text-gray-700 mb-2 text-sm md:text-base'>
+					Автор: {exhibition.author}
+				</p>		
 				<span className='text-xs md:text-sm text-gray-500'>
 					{exhibition.is_published
 						? `Дата публикации: ${formattedDate}`
