@@ -26,6 +26,9 @@ export const Books = ({ book }: BookProps) => {
       document.body.style.overflow = 'auto';
     };
   }, [isModalOpen]);
+  const imageUrl = book.image_url?.startsWith("http")
+    ? book.image_url
+    : new URL(book.image_url!, process.env.NEXT_PUBLIC_BASE_URL).toString();
 
   return (
     <>
@@ -37,11 +40,12 @@ export const Books = ({ book }: BookProps) => {
   <div className="flex items-center gap-3">
     <div className="relative w-[70px] md:w-[150]">
       <Image 
-        src={`${process.env.NEXT_PUBLIC_BASE_URL}${book.image_url}`}
+        src={imageUrl}
         alt={book.title}
         width={150}
         height={200}
         className="object-contain w-full h-[70px] md:h-[150px] shadow-accent-foreground"
+        unoptimized
       />
     </div>
 
@@ -91,9 +95,10 @@ export const Books = ({ book }: BookProps) => {
         {isFullscreen ? (
           <div className="fixed inset-0 md:inset-20 flex items-center justify-center">
             <Image
-              src={`${process.env.NEXT_PUBLIC_BASE_URL}${book.image_url}`}
+              src={imageUrl}
               alt={book.title}
               fill
+              unoptimized
               className="object-contain"
               onClick={(e) => {
                 e.stopPropagation();
@@ -107,10 +112,11 @@ export const Books = ({ book }: BookProps) => {
               {/* Размытый задний фон */}
               <div className="absolute inset-0 overflow-hidden">
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_BASE_URL}${book.image_url}`}
+                  src={imageUrl}
                   alt={book.title}
                   fill
                   className="object-cover blur-xs"
+                  unoptimized
                 />
                 <div className="absolute inset-0 bg-black/50"></div> {/* Затемнение */}
               </div>
@@ -118,11 +124,12 @@ export const Books = ({ book }: BookProps) => {
               {/* Основное изображение */}
               <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
               <Image
-                  src={`${process.env.NEXT_PUBLIC_BASE_URL}${book.image_url}`}
+                  src={imageUrl}
                   alt={book.title}
                   width={150}
                   height={200}
                   className="object-contain h-auto w-full shadow-accent-foreground"
+                  unoptimized
                 />
                 <div className="mt-4 text-center">
                   <h2 className="text-2xl font-bold text-white drop-shadow-md">{book.title}</h2>

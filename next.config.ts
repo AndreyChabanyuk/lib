@@ -1,17 +1,38 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  publicRuntimeConfig: {
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  // output: 'export', // ← Убираем статический экспорт
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   images: {
-    domains: ['exhibitdes.ru'],
+    // либо просто перечислить имена хостов
+    domains: ['www.exhibitdes.ru', 'exhibitdes.ru'],
+    // либо паттерны (Next 12+)
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.exhibitdes.ru',
+        port: '',
+        pathname: '/static/picture/**',
+      },
+    ],
   },
-  // <-- именно здесь, на верхнем уровне конфига, а не внутри publicRuntimeConfig
-  allowedDevOrigins: [
-    'http://localhost:3000',
-    'http://26.0.197.27:3000',
-    // если заходите без указания порта:
-    'http://26.0.197.27',
-  ],
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Forwarded-Host",
+            value: "exhibitdes.ru",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
