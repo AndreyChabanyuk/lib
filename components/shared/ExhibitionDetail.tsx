@@ -86,9 +86,13 @@ export default function ExhibitionDetail({ slug }: Props) {
             unoptimized
           />
         )}
-        <h1 className="relative text-3xl sm:text-5xl p-4 sm:p-5 text-white leading-tight">
-          {data.title}
-        </h1>
+       <h1 className="relative text-3xl sm:text-5xl p-4 sm:p-5 text-white leading-tight" style={{
+          textShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          padding: '10px',
+        }}>
+  {data.title}
+</h1>
       </div>
 
       <div className="flex flex-col md:flex-row p-4 md:p-15">

@@ -18,7 +18,7 @@ const BookPage: React.FC = () => {
 
 	// Добавляем базовый URL для API
 	const API_BASE = '/v2/'
-
+	
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -67,8 +67,8 @@ const BookPage: React.FC = () => {
 		<>
 			{loading && <div>Загрузка...</div>}
 			{error && <div>Ошибка при загрузке данных</div>}
-
-			<div className='flex space-x-8 p-5'>
+			<h1 className='text-center text-3xl font-bold'>Фонд книг</h1>
+			<div className='max-w-7xl px-5 mx-auto my-8'>
 				<div className='filter-item'>
 					<label>Автор:</label>
 					<Autocomplete<Author>
@@ -103,7 +103,7 @@ const BookPage: React.FC = () => {
 				</div>
 			</div>
 
-			<div className='book-list'>
+			<div className="max-w-7xl px-5 mx-auto">
 				{books.map(book => (
 					<Books key={book.id} book={book} />
 				))}
