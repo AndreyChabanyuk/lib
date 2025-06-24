@@ -42,9 +42,9 @@ const BookPage: React.FC = () => {
 	const router = useRouter()
 	
 
-		const handleBookCreated = (newBook: Book) => {
-			router.push(`/books/edit/${newBook.id}`)
-		}
+	const handleBookCreated = () => {
+			router.push(`/books/edit/`)
+		}	
 
 	const handleCreateGenre = async () => {
 		if (!newGenreName.trim()) return
@@ -282,25 +282,10 @@ const BookPage: React.FC = () => {
 				isOpen={!!editingBook}
 				onClose={() => setEditingBook(null)}
 				title='Редактировать книгу'
-				size='lg'
-				actions={
-					<div className='flex justify-end gap-2'>
-						<button
-							onClick={() => setEditingBook(null)}
-							className='px-4 py-2 rounded border'
-						>
-							Отмена
-						</button>
-						<button
-							onClick={handleUpdate}
-							className='px-4 py-2 rounded bg-black hover:bg-black/90 text-white'
-						>
-							Сохранить
-						</button>
-					</div>
-				}
+				size="xl"
+      			disableOutsideClick={loading}
 			>
-				<div className='space-y-4 p-4'>
+				<div className='space-y-4 p-4 max-h-[80vh] overflow-y-auto'>
 					<div>
 						<label className='block text-sm'>Название</label>
 						<input
@@ -507,6 +492,20 @@ const BookPage: React.FC = () => {
 								</div>
 							))}
 						</div>
+					</div>
+					<div className='flex justify-end gap-2'>
+						<button
+							onClick={() => setEditingBook(null)}
+							className='px-4 py-2 rounded border'
+						>
+							Отмена
+						</button>
+						<button
+							onClick={handleUpdate}
+							className='px-4 py-2 rounded bg-black hover:bg-black/90 text-white'
+						>
+							Сохранить
+						</button>
 					</div>
 				</div>
 			</Modal>

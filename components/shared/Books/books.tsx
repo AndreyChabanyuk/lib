@@ -166,7 +166,9 @@ export const Books = ({ book }: BookProps) => {
 										{book.title}
 										</h2>
 										<h3 className='font-bold text-center'>Аннотация</h3>
-										<p className='text-md whitespace-pre-line'>{book.annotations}</p>
+										<p className="text-md whitespace-pre-line mt-2">
+											{book.annotations}
+										</p>
 									</div>
 								</div>
 							</div>
