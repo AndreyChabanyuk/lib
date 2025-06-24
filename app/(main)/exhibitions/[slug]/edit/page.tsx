@@ -254,7 +254,7 @@ export default function ExhibitionEditor() {
 				}
 				size='full'
 			>
-				<div className='p-6'>
+				<div className='p-6 overflow-y-auto h-[80vh]'>
 					{editingSection || editingBlock ? (
 						<form
 							className='space-y-4'
