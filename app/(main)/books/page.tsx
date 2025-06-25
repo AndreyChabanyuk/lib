@@ -80,10 +80,10 @@ const BookPage: React.FC = () => {
 				</div>
 
 				<div className='filter-item'>
-					<label>Жанр:</label>
+					<label>Форма произведения:</label>
 					<Autocomplete<Genre>
 						endpoint='v2/library/genres/search/'
-						placeholder='Введите название жанра...'
+						placeholder='Введите название формы произведения...'
 						labelField='name'
 						onSelect={genre => setSelectedGenre(genre)}
 					/>

@@ -199,7 +199,7 @@ const BookPage: React.FC = () => {
 							onClick={() => router.push("/ja")}
 							className='bg-black text-white px-4 py-2 rounded hover:bg-black/90 transition'
 							>
-							Таблица авторов и жанров
+							Таблица авторов и форм
 							</button>
 						</div>
 					</div>
@@ -222,10 +222,10 @@ const BookPage: React.FC = () => {
 					</div>
 
 					<div className='filter-item'>
-						<label>Жанр:</label>
+						<label>Форма произведения:</label>
 						<Autocomplete<Genre>
 							endpoint='v2/library/genres/search/'
-							placeholder='Введите название жанра...'
+							placeholder='Введите название формы...'
 							labelField='name'
 							onSelect={genre => setSelectedGenre(genre)}
 						/>
@@ -417,10 +417,10 @@ const BookPage: React.FC = () => {
 					</div>
 
 					<div>
-						<label className='block text-sm'>Жанры</label>
+						<label className='block text-sm'>Форма произведения</label>
 						<Autocomplete<Genre>
 							endpoint='v2/library/genres/search/'
-							placeholder='Добавьте жанр'
+							placeholder='Добавьте форму'
 							labelField='name'
 							onSelect={genre => {
 								if (!editGenres.find(g => g.id === genre.id)) {
@@ -435,7 +435,7 @@ const BookPage: React.FC = () => {
 								className='mt-1 text-blue-600 underline text-sm'
 								onClick={() => setIsAddingGenre(true)}
 							>
-								Добавить новый жанр
+								Добавить новую форму произведения
 							</button>
 						)}
 
@@ -445,7 +445,7 @@ const BookPage: React.FC = () => {
 									type='text'
 									value={newGenreName}
 									onChange={e => setNewGenreName(e.target.value)}
-									placeholder='Название жанра'
+									placeholder='Название формы произведения'
 									className='border rounded px-2 py-1'
 									disabled={creatingGenreLoading}
 								/>

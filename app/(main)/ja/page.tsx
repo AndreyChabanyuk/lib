@@ -198,7 +198,7 @@ const AuthorsAndGenresPage = () => {
         className='relative p-0 m-0'
       ></BackButton>
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Авторы и жанры</h1>
+      <h1 className="text-2xl font-bold mb-6">Авторы и формы произведения</h1>
       
       {/* Authors Section */}
       <section className="mb-8">
@@ -211,7 +211,7 @@ const AuthorsAndGenresPage = () => {
             type="text"
             value={newAuthorName}
             onChange={(e) => setNewAuthorName(e.target.value)}
-            placeholder="Enter new author name"
+            placeholder="Введите названия автора"
             className="border rounded px-3 py-1 flex-grow"
           />
           <button 
@@ -279,7 +279,7 @@ const AuthorsAndGenresPage = () => {
       {/* Genres Section */}
       <section>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Жанры</h2>
+          <h2 className="text-xl font-semibold">Формы произведения</h2>
         </div>
 
         <form onSubmit={handleAddGenre} className="mb-4 flex gap-2">
@@ -287,17 +287,17 @@ const AuthorsAndGenresPage = () => {
             type="text"
             value={newGenreName}
             onChange={(e) => setNewGenreName(e.target.value)}
-            placeholder="Enter new genre name"
+            placeholder="Введите название формы произведения"
             className="border rounded px-3 py-1 flex-grow"
           />
           <button 
             type="submit"
             className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700"
-            title="Создать жанр"
+            title="Создать форму произведения"
           >
             <Image
               src='/icons/add.svg'
-              alt='Добавить жанр'
+              alt='Добавить форму произведения'
               width={iconSize}
               height={iconSize}
               className="filter brightness-0 invert"

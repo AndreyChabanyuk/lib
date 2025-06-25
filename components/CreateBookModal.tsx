@@ -196,14 +196,14 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="font-medium">Жанры *</label>
+              <label className="font-medium">Формы *</label>
               {!genreInputVisible && (
                 <button
                   type="button"
                   className="text-blue-500 text-sm"
                   onClick={() => setGenreInputVisible(true)}
                 >
-                  + Добавить жанр
+                  + Добавить форму
                 </button>
               )}
             </div>
@@ -213,7 +213,7 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({
                 <Input
                   value={newGenreName}
                   onChange={e => setNewGenreName(e.target.value)}
-                  placeholder="Название нового жанра"
+                  placeholder="Название нового форму"
                   autoFocus
                   className="flex-1 min-w-[200px]"
                 />
@@ -235,7 +235,7 @@ const CreateBookModal: React.FC<CreateBookModalProps> = ({
 
             <Autocomplete<Genre>
               endpoint="v2/library/genres/search/"
-              placeholder="Введите название жанра..."
+              placeholder="Введите название форму..."
               labelField="name"
               multiple
               onMultiSelect={onGenresChange}

@@ -48,9 +48,9 @@ export const Books = ({ book }: BookProps) => {
 				<div className="relative flex-shrink-0 w-[80px] h-[120px] md:w-[130px] md:h-[220px]">
 					<Image
 					src={imageUrl}
+					fill
 					alt={book.title}
-					layout="fill"
-					objectFit="contain"
+					sizes="(max-width: 768px) 100vw, 50vw"
 					className="transition-transform duration-300"
 					/>
 				</div>
@@ -77,7 +77,7 @@ export const Books = ({ book }: BookProps) => {
 					{/* Мета-информация - прижимается к низу */}
 					<div className='mt-2 space-y-1 w-50 md:w-aut'>
 						<p className='text-xs text-muted-foreground truncate'>
-							Жанры: {book.genres.map(genre => genre.name).join(', ')}
+							Форма произведения: {book.genres.map(genre => genre.name).join(', ')}
 						</p>
 						<p className='text-xs text-muted-foreground truncate'>
 							Авторы: {book.authors.map(author => author.name).join(', ')}
@@ -157,9 +157,8 @@ export const Books = ({ book }: BookProps) => {
 							</button>
 							<p className='text-center mt-4'>Год публикации книги: {book.year_of_publication}г.</p>
 						</div>
-						<div className="flex flex-col md:flex-row md:justify-center gap-4 w-full">
-							{/* Левая часть (ваш текущий блок) */}
-							<div className='w-full md:w-1/3 bg-gray-100 p-4 rounded-lg'>
+						<div className="flex flex-col md:flex-row md:justify-center w-full">
+							<div className='w-full md:w-1/2 bg-gray-100 p-4 rounded-lg'>
 								<div className='overflow-y-auto rounded-lg p-3 flex flex-col h-[500px]'>
 									<div>
 										<h2 className='font-bold text-center text-2xl mt-6'>
@@ -169,26 +168,14 @@ export const Books = ({ book }: BookProps) => {
 										<p className="text-md whitespace-pre-line mt-2">
 											{book.annotations}
 										</p>
+										<p className='font-bold text-md text-center'>
+										Библиографическое описание книги
+										</p>
+										<p className='text-sm whitespace-pre-line break-words'>
+										{book.library_description}
+										</p>
 									</div>
 								</div>
-							</div>
-
-							{/* Правая часть (новый блок) */}
-							<div className="w-full md:w-1/3 bg-gray-100 p-4 rounded-lg">
-								<h3 className="font-bold text-xl mb-4">Дополнительная информация</h3>
-								<p className='font-bold text-center'>Авторы и жанры</p>
-								<div className='mt-auto pl-5'> 
-									<ul className='list-disc'>
-										<li>Авторы: {book.authors.map(author => author.name).join(', ')}</li>
-										<li>Жанры: {book.genres.map(genre => genre.name).join(', ')}</li>
-									</ul>
-								</div>
-								<p className='font-bold text-md text-center'>
-								Библиографическое описание книги
-								</p>
-								<p className='text-sm whitespace-pre-line break-words'>
-								{book.library_description}
-								</p>
 							</div>
 						</div>
 					</div>

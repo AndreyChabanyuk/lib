@@ -269,29 +269,27 @@ export default function ExhibitionDetail({ slug }: Props) {
                 </p>
               </div>
 
-              {/* Правая половина */}
-              <div className="flex flex-col md:flex-row md:justify-center gap-4 w-full">
-                <div className="w-full md:w-1/3 bg-gray-100 p-4 rounded-lg overflow-y-auto h-[500px]">
-                  <h2 className="font-bold text-center text-2xl mt-6">
-                    {selectedBook.title}
-                  </h2>
-                  <h3 className="font-bold text-center mt-2">Аннотация</h3>
-                  <p className="text-md whitespace-pre-line mt-2">
-                    {selectedBook.annotations}
-                  </p>
-                </div>
-                <div className="w-full md:w-1/3 bg-gray-100 p-4 rounded-lg">
-                  <h3 className="font-bold text-xl mb-4">Дополнительная информация</h3>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>Авторы: {selectedBook.authors.map((a: any) => a.name).join(', ')}</li>
-                    <li>Жанры: {selectedBook.genres.map((g: any) => g.name).join(', ')}</li>
-                  </ul>
-                  <h4 className="font-bold text-md text-center mt-4">Библиографическое описание</h4>
-                  <p className="text-sm whitespace-pre-line break-words mt-1">
-                    {selectedBook.library_description}
-                  </p>
-                </div>
-              </div>
+              <div className="flex flex-col md:flex-row md:justify-center w-full">
+							<div className='w-full md:w-1/2 bg-gray-100 p-4 rounded-lg'>
+								<div className='overflow-y-auto rounded-lg p-3 flex flex-col h-[500px]'>
+									<div>
+										<h2 className='font-bold text-center text-2xl mt-6'>
+										{selectedBook.title}
+										</h2>
+										<h3 className='font-bold text-center'>Аннотация</h3>
+										<p className="text-md whitespace-pre-line mt-2">
+											{selectedBook.annotations}
+										</p>
+										<p className='font-bold text-md text-center'>
+										Библиографическое описание книги
+										</p>
+										<p className='text-sm whitespace-pre-line break-words'>
+										{selectedBook.library_description}
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
             </div>
           )
         )}
